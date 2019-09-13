@@ -290,5 +290,9 @@ def save_all():
     save_data_to_file("favourites.txt", favourite_drink)
 
 
+def print_change():
+    print("A change has been done in the project")
+
+
 while True:
     main()
