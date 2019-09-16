@@ -131,7 +131,7 @@ def return_user_selection(user_selection):
         round1.add_to_order(person, drink)
         with open("rounds.txt", "r") as f:
             past_rounds = json.load(f)
-        new_round_id = int(max(list(past_rounds.keys())))+1
+        new_round_id = int(max(list(past_rounds.keys()))) + 1
         past_rounds[new_round_id] = {round1.brew_master: round1.get_drink_orders()}
         save_data_to_file("rounds.txt", past_rounds)
         # save_data_to_file("rounds.txt", {1: {round1.brew_master: round1.get_drink_orders()}})
