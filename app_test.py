@@ -124,17 +124,7 @@ def return_user_selection(user_selection):
     elif user_selection == 8:
         print_favourites()
     elif user_selection == 9:
-        brew_master = input("Who is making the round? ")
-        round1 = round.Round(brew_master)
-        person = input("Who wants a drink? ")
-        drink = input("What do they want? ")
-        round1.add_to_order(person, drink)
-        with open("rounds.txt", "r") as f:
-            past_rounds = json.load(f)
-        new_round_id = int(max(list(past_rounds.keys()))) + 1
-        past_rounds[new_round_id] = {round1.brew_master: round1.get_drink_orders()}
-        save_data_to_file("rounds.txt", past_rounds)
-        # save_data_to_file("rounds.txt", {1: {round1.brew_master: round1.get_drink_orders()}})
+        get_and_update_drink_round()
     elif user_selection == 10:
         exit_app()
 
@@ -212,7 +202,7 @@ def get_id():
 def check_and_return_id_in_dictionary(dictionary):
     while True:
         id_to_check = get_id()
-        if id_to_check in dictionary.keys():
+        if str(id_to_check) in dictionary.keys():
             return id_to_check
         else:
             print("Please enter an id in the list")
@@ -262,6 +252,28 @@ drinks = load_data_to_dict("drinks.txt")
 favourite_drink = load_data_to_dict("favourites.txt")
 
 
+def get_and_update_drink_round():
+    print("Please enter the name of the person who is making the drink round")
+    brew_master = input("$")
+    round1 = round.Round(brew_master)
+    print("Please enter name of the person who wants a drink and their chosen drink")
+    while True:
+        person = input("Person $")
+        drink = input("Drink $")
+        round1.add_to_order(person, drink)
+        user_continue = input("Do you want to add another person to the round? [y/n] ").capitalize()
+        if not does_user_want_to_continue_yes_or_no(user_continue):
+            break
+    with open("rounds.txt", "r") as f:
+        past_rounds = json.load(f)
+    if len(past_rounds.keys()) == 0:
+        new_round_id = 1
+    else:
+        new_round_id = int(max(list(past_rounds.keys()))) + 1
+    past_rounds[new_round_id] = {round1.brew_master: round1.get_drink_orders()}
+    save_data_to_file("rounds.txt", past_rounds)
+
+
 def print_dict(dictionary, title):
     print(f"| {'=' * 25}")
     print(f"| {title.capitalize()}")
@@ -277,9 +289,7 @@ def print_favourites():
     print(f"| {'=' * 25}")
     for key, value in favourite_drink.items():
         person_name = people.get(key).strip().capitalize()
-        print(person_name)
-        print(value)
-        drink_name = drinks.get(value).strip().capitalize()
+        drink_name = drinks.get(str(value)).strip().capitalize()
         print(f"| {person_name} => {drink_name}")
     print(f"| {'=' * 25}")
 
@@ -288,10 +298,6 @@ def save_all():
     save_data_to_file("people.txt", people)
     save_data_to_file("drinks.txt", drinks)
     save_data_to_file("favourites.txt", favourite_drink)
-
-
-def print_change():
-    print("A change has been done in the project")
 
 
 while True:
