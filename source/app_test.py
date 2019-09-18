@@ -1,133 +1,20 @@
 import os
+import pyfiglet
+from prettytable import PrettyTable
 
-from source.round import Round
-from source.saving_logic import *
-
-
-def print_header(title):
-    print("| " + title.upper())
-
-
-def print_row(rows):
-    rows.sort()
-    for row in rows:
-        print("| " + row.capitalize())
-
-
-# TODO redo border making method to be more efficient
-def print_border(title, row):
-    print(f"+{'=' * (calculate_row_length(title, row) + 7)}")
-
-
-def print_table_header(title, row):
-    print_border(title, row)
-    print_header(title)
-    print_border(title, row)
-
-
-def print_table(title, rows):
-    print_table_header(title, rows)
-    print_row(rows)
-    print_border(title, rows)
-
-
-def calculate_row_length(title, rows):
-    max_value = len(title)
-    for row in rows:
-        if len(row) > max_value:
-            max_value = len(row)
-    return max_value
-
-
-def print_row_with_id(title, rows):
-    rows.sort()
-    id_number = 1
-    for row in rows:
-        print(f"| {row.capitalize()}{' ' * (calculate_row_length(title, rows) - len(row))} => {str(id_number)}")
-        id_number += 1
-
-
-def print_table_with_id(title, rows):
-    print_table_header(title, rows)
-    print_row_with_id(title, rows)
-    print_border(title, rows)
-
-
-def get_and_update_drink_round():
-    print("Please enter the name of the person who is making the drink round")
-    brew_master = input("$")
-    round1 = Round(brew_master)
-    print("Please enter name of the person who wants a drink and their chosen drink")
-    while True:
-        person = input("Person $")
-        drink = input("Drink $")
-        round1.add_to_order(person, drink)
-        print("Do you want to add another person to the round? [y/n]")
-        user_continue = input("$")
-        break
-    with open("rounds.txt", "r") as f:
-        past_rounds = json.load(f)
-    if len(past_rounds.keys()) == 0:
-        new_round_id = 1
-    else:
-        new_round_id = int(max(list(past_rounds.keys()))) + 1
-    past_rounds[new_round_id] = {round1.brew_master: round1.get_drink_orders()}
-    save_data_to_file("rounds.txt", past_rounds)
-
-
-def print_dict(dictionary, title):
-    print(f"| {'=' * 25}")
-    print(f"| {title.capitalize()}")
-    print(f"| {'=' * 25}")
-    for key, value in dictionary.items():
-        print(f"| {key} => {value.strip().capitalize()}")
-    print(f"| {'=' * 25}")
-
-
-def print_favourites():
-    print(f"| {'=' * 25}")
-    print("| Favourites")
-    print(f"| {'=' * 25}")
-    for key, value in favourite_drink.items():
-        try:
-            person_name = people.get(key).strip().capitalize()
-            drink_name = drinks.get(str(value)).strip().capitalize()
-            print(f"| {person_name} => {drink_name}")
-        except AttributeError:
-            pass
-        except:
-            print("Unexpected error occured")
-    print(f"| {'=' * 25}")
-
-
-
+import saving_logic
 
 
 def save_all():
-    save_data_to_file("people.txt", people)
-    save_data_to_file("drinks.txt", drinks)
-    save_data_to_file("favourites.txt", favourite_drink)
-
-#
-#
-#
-#
-#
-
-
-# person_id: name
-people = load_data_to_dict("people.txt")
-
-# drink_id: drink
-drinks = load_data_to_dict("drinks.txt")
-
-# person_id: drink_id
-favourite_drink = load_data_to_dict("favourites.txt")
+    saving_logic.save_data_to_file("people.txt", people)
+    saving_logic.save_data_to_file("drinks.txt", drinks)
+    saving_logic.save_data_to_file("favourites.txt", favourite_drink)
 
 
 def print_main_menu():
-    print("""Welcome to BrIW!
-
+    main_menu_banner = pyfiglet.figlet_format("brIW")
+    print(main_menu_banner)
+    print("""
     [1] People
     [2] Drinks
     [3] Rounds
@@ -137,6 +24,8 @@ def print_main_menu():
 
 
 def print_people_menu():
+    people_menu_banner = pyfiglet.figlet_format("People")
+    print(people_menu_banner)
     print("""
     [1] View people
     [2] Add people
@@ -147,6 +36,8 @@ def print_people_menu():
 
 
 def print_drinks_menu():
+    drinks_menu_banner = pyfiglet.figlet_format("Drinks")
+    print(drinks_menu_banner)
     print("""
     [1] View drinks
     [2] Add drinks
@@ -156,6 +47,8 @@ def print_drinks_menu():
 
 
 def print_rounds_menu():
+    rounds_menu_banner = pyfiglet.figlet_format("Rounds")
+    print(rounds_menu_banner)
     print("""
     [1] View rounds
     [2] Add round
@@ -208,9 +101,18 @@ def get_sanitised_input(prompt, type_=None, min_=None, max_=None, range_=None):
             return ui
 
 
-def get_key_for_new_value_as_string(dictionary):
-    key = str(len(dictionary) + 1)
-    return key
+def return_list_of_dictionary_keys(dictionary):
+    list_of_keys = list(dictionary.keys())
+    return list_of_keys
+
+
+def get_last_element_of_list_and_add_one_then_return_as_string(list_of_keys):
+    try:
+        last_key_in_list = int(list_of_keys[-1])
+        last_key_in_list += 1
+        return str(last_key_in_list)
+    except IndexError:
+        return str(1)
 
 
 def add_to_dictionary(dictionary, key, value):
@@ -224,6 +126,20 @@ def delete_dictionary_entry(dictionary, key):
 
 
 if __name__ == "__main__":
+    # load data from text files to corresponding dictionaries
+    people = saving_logic.load_data_to_dict("people.txt")
+    drinks = saving_logic.load_data_to_dict("drinks.txt")
+    favourite_drink = saving_logic.load_data_to_dict("favourites.txt")
+
+    # create people table object
+    people_table = PrettyTable()
+    people_table.field_names = ["ID", "People"]
+    for id_, person in people.items():
+        people_table.add_row([id_, person.capitalize()])
+
+    # create drinks table object
+    drinks_table = PrettyTable()
+
     while True:
         clear_screen()
         print_main_menu()
@@ -232,112 +148,140 @@ if __name__ == "__main__":
 
         # people
         if main_menu_user_choice == 1:
-            print_people_menu()
-            people_menu_user_choice = get_sanitised_input("Choose a people menu option: ", type_=int, min_=1, max_=5)
-            clear_screen()
-            # view people
-            if people_menu_user_choice == 1:
-                # TODO add view people method
-                pass
+            while True:
+                clear_screen()
+                print_people_menu()
+                people_menu_user_choice = get_sanitised_input("Choose a people menu option: ",
+                                                              type_=int, min_=1, max_=5)
+                clear_screen()
 
-            # add people
-            elif people_menu_user_choice == 2:
-                while True:
-                    clear_screen()
-                    name_to_add = get_sanitised_input("Enter a name to add: ")
-                    new_name_key = get_key_for_new_value_as_string(people)
-                    people = add_to_dictionary(people, new_name_key, name_to_add)
-                    clear_screen()
-                    print("Person added")
-                    user_continue = get_sanitised_input("Do you want to add another name? [y/n]: ",
-                                                        type_=str.lower, range_=('y', 'Y', 'n', 'N'))
-                    if user_continue.upper() == 'N':
-                        break
+                # view people
+                if people_menu_user_choice == 1:
+                    # TODO add view people method
+                    print(people_table)
+                    print("")
+                    return_to_menu()
 
-            # delete people
-            elif people_menu_user_choice == 3:
-                while True:
-                    # show table of people and ID's
-                    clear_screen()
-                    id_to_delete = get_sanitised_input("Enter the ID of the person you want to delete: ", type_=int)
-                    clear_screen()
-                    if str(id_to_delete) in people.keys():
-                        # delete corresponding person from dictionary
-                        people = delete_dictionary_entry(people, str(id_to_delete))
-                        print("Person deleted")
-                    else:
-                        print("That ID is not in the list")
-                    user_continue = get_sanitised_input("Do you want to delete another person? [y/n]: ",
-                                                        type_=str.lower, range_=('y', 'Y', 'n', 'N'))
-                    if user_continue.upper() == 'N':
-                        break
+                # add people
+                elif people_menu_user_choice == 2:
+                    while True:
+                        clear_screen()
+                        name_to_add = get_sanitised_input("Enter a name to add: ")
+                        list_of_people_keys = return_list_of_dictionary_keys(people)
+                        new_name_key = get_last_element_of_list_and_add_one_then_return_as_string(list_of_people_keys)
+                        people = add_to_dictionary(people, new_name_key, name_to_add)
 
-            # add favourites
-            elif people_menu_user_choice == 4:
-                # TODO add add favourites option
-                pass
+                        # add to the people_table object
+                        people_table.add_row([new_name_key, name_to_add])
 
-            else:
-                print("Returning to menu...")
-                continue
+                        clear_screen()
+                        print("Person added")
+                        user_continue = get_sanitised_input("Do you want to add another name? [y/n]: ",
+                                                            type_=str.lower, range_=('y', 'Y', 'n', 'N'))
+                        if user_continue.upper() == 'N':
+                            break
+
+                # delete people
+                elif people_menu_user_choice == 3:
+                    while True:
+                        # show table of people and ID's
+                        clear_screen()
+                        print(people_table)
+                        id_to_delete = get_sanitised_input("Enter the ID of the person you want to delete: ",
+                                                           type_=int)
+                        clear_screen()
+                        if str(id_to_delete) in people.keys():
+                            # delete corresponding person from dictionary
+                            people = delete_dictionary_entry(people, str(id_to_delete))
+                            print("Person deleted")
+                        else:
+                            print("That ID is not in the list")
+                        user_continue = get_sanitised_input("Do you want to delete another person? [y/n]: ",
+                                                            type_=str.lower, range_=('y', 'Y', 'n', 'N'))
+                        if user_continue.upper() == 'N':
+                            break
+
+                # add favourites
+                elif people_menu_user_choice == 4:
+                    # TODO add add favourites option
+                    pass
+
+                # return to main menu
+                else:
+                    break
 
         # drinks
         elif main_menu_user_choice == 2:
-            print_drinks_menu()
-            drinks_menu_user_choice = get_sanitised_input("Choose a drinks menu option ", type_=int, min_=1, max_=4)
-            clear_screen()
+            while True:
+                clear_screen()
+                print_drinks_menu()
+                drinks_menu_user_choice = get_sanitised_input("Choose a drinks menu option ", type_=int, min_=1, max_=4)
+                clear_screen()
 
-            # view drinks
-            if drinks_menu_user_choice == 1:
-                # TODO add view drinks option
-                pass
+                # view drinks
+                if drinks_menu_user_choice == 1:
+                    # TODO add view drinks option
+                    print(drinks)
+                    return_to_menu()
 
-            # add drinks
-            elif drinks_menu_user_choice == 2:
-                while True:
-                    clear_screen()
-                    drink_to_add = get_sanitised_input("Enter a drink to add: ")
-                    new_drink_key = get_key_for_new_value_as_string(drinks)
-                    drinks = add_to_dictionary(drinks, new_drink_key, drink_to_add)
-                    clear_screen()
-                    print("Drink added")
-                    user_continue = get_sanitised_input("Do you want to add another drink? [y/n]: ",
-                                                        type_=str.lower, range_=('y', 'Y', 'n', 'N'))
-                    if user_continue.upper() == 'N':
-                        break
+                # add drinks
+                elif drinks_menu_user_choice == 2:
+                    while True:
+                        clear_screen()
+                        drink_to_add = get_sanitised_input("Enter a drink to add: ")
+                        list_of_drinks_keys = return_list_of_dictionary_keys(drinks)
+                        new_drink_key = get_last_element_of_list_and_add_one_then_return_as_string(list_of_drinks_keys)
+                        drinks = add_to_dictionary(drinks, new_drink_key, drink_to_add)
+                        clear_screen()
+                        print("Drink added")
+                        user_continue = get_sanitised_input("Do you want to add another drink? [y/n]: ",
+                                                            type_=str.lower, range_=('y', 'Y', 'n', 'N'))
+                        if user_continue.upper() == 'N':
+                            break
 
-            # delete drinks
-            elif drinks_menu_user_choice == 3:
-                while True:
-                    # show table of people and ID's
-                    id_to_delete = get_sanitised_input("Enter the ID of the drink you want to delete: ", type_=int)
-                    clear_screen()
-                    if str(id_to_delete) in drinks.keys():
-                        # delete corresponding person from dictionary
-                        drinks = delete_dictionary_entry(drinks, str(id_to_delete))
-                        print("Drink deleted")
-                    else:
-                        print("That ID is not in the list")
-                    user_continue = get_sanitised_input("Do you want to delete another drink? [y/n]: ",
-                                                        type_=str.lower, range_=('y', 'Y', 'n', 'N'))
-                    if user_continue.upper() == 'N':
-                        break
+                # delete drinks
+                elif drinks_menu_user_choice == 3:
+                    while True:
+                        # show table of drinks and ID's
+                        print(drinks)
+                        id_to_delete = get_sanitised_input("Enter the ID of the drink you want to delete: ", type_=int)
+                        clear_screen()
+                        if str(id_to_delete) in drinks.keys():
+                            # delete corresponding person from dictionary
+                            drinks = delete_dictionary_entry(drinks, str(id_to_delete))
+                            print("Drink deleted")
+                        else:
+                            print("That ID is not in the list")
+                        user_continue = get_sanitised_input("Do you want to delete another drink? [y/n]: ",
+                                                            type_=str.lower, range_=('y', 'Y', 'n', 'N'))
+                        if user_continue.upper() == 'N':
+                            break
+
+                # return to main menu
+                else:
+                    break
 
         # rounds
         elif main_menu_user_choice == 3:
-            print_rounds_menu()
-            rounds_menu_user_choice = get_sanitised_input("Choose a rounds menu option: ", type_=int, min_=1, max_=2)
-            clear_screen()
+            while True:
+                print_rounds_menu()
+                rounds_menu_user_choice = get_sanitised_input("Choose a rounds menu option: ",
+                                                              type_=int, min_=1, max_=2)
+                clear_screen()
 
-            # view rounds
-            if rounds_menu_user_choice == 1:
-                # TODO add view rounds option
-                pass
+                # view rounds
+                if rounds_menu_user_choice == 1:
+                    # TODO add view rounds option
+                    pass
 
-            # add round
-            elif rounds_menu_user_choice == 2:
-                # TODO add add round option
-                pass
+                # add round
+                elif rounds_menu_user_choice == 2:
+                    # TODO add add round option
+                    pass
+
+                # return to main menu
+                else:
+                    break
 
         # help
         elif main_menu_user_choice == 4:
@@ -346,9 +290,6 @@ if __name__ == "__main__":
 
         # exit
         elif main_menu_user_choice == 5:
+            save_all()
             print("Thank you for BrIWing!")
             exit()
-
-        clear_screen()
-        return_to_menu()
-        clear_screen()
