@@ -1,7 +1,7 @@
 import os
-import round
-import json
-import saving_logic
+
+from source.round import Round
+from source.saving_logic import *
 
 
 def print_header(title):
@@ -56,7 +56,7 @@ def print_table_with_id(title, rows):
 def get_and_update_drink_round():
     print("Please enter the name of the person who is making the drink round")
     brew_master = input("$")
-    round1 = round.Round(brew_master)
+    round1 = Round(brew_master)
     print("Please enter name of the person who wants a drink and their chosen drink")
     while True:
         person = input("Person $")
@@ -72,7 +72,7 @@ def get_and_update_drink_round():
     else:
         new_round_id = int(max(list(past_rounds.keys()))) + 1
     past_rounds[new_round_id] = {round1.brew_master: round1.get_drink_orders()}
-    saving_logic.save_data_to_file("rounds.txt", past_rounds)
+    save_data_to_file("rounds.txt", past_rounds)
 
 
 def print_dict(dictionary, title):
@@ -100,16 +100,13 @@ def print_favourites():
     print(f"| {'=' * 25}")
 
 
-def load_data_to_dict(filepath):
-    with open(filepath, "r") as f:
-        return_dict = json.load(f)
-    return return_dict
+
 
 
 def save_all():
-    saving_logic.save_data_to_file("people.txt", people)
-    saving_logic.save_data_to_file("drinks.txt", drinks)
-    saving_logic.save_data_to_file("favourites.txt", favourite_drink)
+    save_data_to_file("people.txt", people)
+    save_data_to_file("drinks.txt", drinks)
+    save_data_to_file("favourites.txt", favourite_drink)
 
 #
 #
