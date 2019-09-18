@@ -1,10 +1,9 @@
 import unittest
-from app_test import *
 from round import *
 
 
 class TestDrinkAdd(unittest.TestCase):
-    def test_add_to_order(self):
+    def test_added_order_in_dictionary(self):
         # Arrange
         person = "john"
         drink = "tea"
@@ -14,6 +13,8 @@ class TestDrinkAdd(unittest.TestCase):
         test_round.add_to_order(person, drink)
 
         # Assert
+        self.assertEqual(test_round.orders, {"john": "tea"})
 
-    def test_load_past_rounds(self):
 
+if __name__ == "__main__":
+    unittest.main()
