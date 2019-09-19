@@ -10,3 +10,7 @@ def load_data_to_dict(filepath):
     with open(filepath, "r") as f:
         return_dict = json.load(f)
     return return_dict
+
+
+if __name__ == '__main__':
+    pass

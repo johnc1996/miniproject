@@ -125,20 +125,27 @@ def delete_dictionary_entry(dictionary, key):
     return dictionary
 
 
+def create_people_table_object():
+    people_table_object = PrettyTable()
+    people_table_object.field_names = ["ID", "People"]
+    for id_, person in people.items():
+        people_table_object.add_row([id_, person.capitalize()])
+    return people_table_object
+
+
+def create_table_object_of_dictionary_items_and_capitalize_table_name(table_name, dictionary):
+    pretty_table_object = PrettyTable()
+    pretty_table_object.field_names = ["ID", table_name.capitalize()]
+    for id_, value in dictionary.items():
+        pretty_table_object.add_row([id_, value.capitalize()])
+    return pretty_table_object
+
+
 if __name__ == "__main__":
     # load data from text files to corresponding dictionaries
     people = saving_logic.load_data_to_dict("people.txt")
     drinks = saving_logic.load_data_to_dict("drinks.txt")
     favourite_drink = saving_logic.load_data_to_dict("favourites.txt")
-
-    # create people table object
-    people_table = PrettyTable()
-    people_table.field_names = ["ID", "People"]
-    for id_, person in people.items():
-        people_table.add_row([id_, person.capitalize()])
-
-    # create drinks table object
-    drinks_table = PrettyTable()
 
     while True:
         clear_screen()
@@ -157,7 +164,10 @@ if __name__ == "__main__":
 
                 # view people
                 if people_menu_user_choice == 1:
-                    # TODO add view people method
+                    # creates people table object using Prettytable each time view people option is selected
+                    # TODO create object one at program start and add delete rows based on what user adds/deletes in
+                    #  the session
+                    people_table = create_people_table_object()
                     print(people_table)
                     print("")
                     return_to_menu()
@@ -171,9 +181,6 @@ if __name__ == "__main__":
                         new_name_key = get_last_element_of_list_and_add_one_then_return_as_string(list_of_people_keys)
                         people = add_to_dictionary(people, new_name_key, name_to_add)
 
-                        # add to the people_table object
-                        people_table.add_row([new_name_key, name_to_add])
-
                         clear_screen()
                         print("Person added")
                         user_continue = get_sanitised_input("Do you want to add another name? [y/n]: ",
@@ -186,6 +193,7 @@ if __name__ == "__main__":
                     while True:
                         # show table of people and ID's
                         clear_screen()
+                        people_table = create_people_table_object()
                         print(people_table)
                         id_to_delete = get_sanitised_input("Enter the ID of the person you want to delete: ",
                                                            type_=int)
@@ -220,8 +228,9 @@ if __name__ == "__main__":
 
                 # view drinks
                 if drinks_menu_user_choice == 1:
-                    # TODO add view drinks option
-                    print(drinks)
+                    drinks_table = create_table_object_of_dictionary_items_and_capitalize_table_name("drinks", drinks)
+                    print(drinks_table)
+                    print("")
                     return_to_menu()
 
                 # add drinks
@@ -243,7 +252,10 @@ if __name__ == "__main__":
                 elif drinks_menu_user_choice == 3:
                     while True:
                         # show table of drinks and ID's
-                        print(drinks)
+                        drinks_table = create_table_object_of_dictionary_items_and_capitalize_table_name("drinks",
+                                                                                                         drinks)
+                        print(drinks_table)
+                        print("")
                         id_to_delete = get_sanitised_input("Enter the ID of the drink you want to delete: ", type_=int)
                         clear_screen()
                         if str(id_to_delete) in drinks.keys():
