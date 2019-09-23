@@ -1,5 +1,7 @@
 import os
+from os import environ
 import pyfiglet
+import pymysql
 from prettytable import PrettyTable
 
 import saving_logic
@@ -125,14 +127,6 @@ def delete_dictionary_entry(dictionary, key):
     return dictionary
 
 
-def create_people_table_object():
-    people_table_object = PrettyTable()
-    people_table_object.field_names = ["ID", "People"]
-    for id_, person in people.items():
-        people_table_object.add_row([id_, person.capitalize()])
-    return people_table_object
-
-
 def create_table_object_of_dictionary_items_and_capitalize_table_name(table_name, dictionary):
     pretty_table_object = PrettyTable()
     pretty_table_object.field_names = ["ID", table_name.capitalize()]
@@ -143,7 +137,34 @@ def create_table_object_of_dictionary_items_and_capitalize_table_name(table_name
 
 if __name__ == "__main__":
     # load data from text files to corresponding dictionaries
-    people = saving_logic.load_data_to_dict("people.txt")
+    people = {}
+    db = pymysql.connect(
+        environ.get('DB_HOST'),  # host
+        environ.get('DB_USER'),  # username
+        environ.get('DB_PASSWORD'),  # password
+        environ.get('DB_NAME')  # database
+    )
+
+    cursor = db.cursor()
+
+    try:
+        cursor.execute("SELECT * FROM person")
+
+        results = cursor.fetchall()
+
+        for row in results:
+            id_ = row[0]
+            first_name = row[1]
+
+            people[id_] = first_name
+
+    except:
+        print("Error occurred")
+
+    finally:
+        db.close()
+
+    # people = saving_logic.load_data_to_dict("people.txt")
     drinks = saving_logic.load_data_to_dict("drinks.txt")
     favourite_drink = saving_logic.load_data_to_dict("favourites.txt")
 
@@ -164,10 +185,9 @@ if __name__ == "__main__":
 
                 # view people
                 if people_menu_user_choice == 1:
-                    # creates people table object using Prettytable each time view people option is selected
                     # TODO create object one at program start and add delete rows based on what user adds/deletes in
                     #  the session
-                    people_table = create_people_table_object()
+                    people_table = create_table_object_of_dictionary_items_and_capitalize_table_name("people", people)
                     print(people_table)
                     print("")
                     return_to_menu()
@@ -177,12 +197,16 @@ if __name__ == "__main__":
                     while True:
                         clear_screen()
                         name_to_add = get_sanitised_input("Enter a name to add: ")
-                        list_of_people_keys = return_list_of_dictionary_keys(people)
-                        new_name_key = get_last_element_of_list_and_add_one_then_return_as_string(list_of_people_keys)
-                        people = add_to_dictionary(people, new_name_key, name_to_add)
-
                         clear_screen()
-                        print("Person added")
+                        
+                        if name_to_add is not "":
+                            list_of_people_keys = return_list_of_dictionary_keys(people)
+                            new_name_key = get_last_element_of_list_and_add_one_then_return_as_string(list_of_people_keys)
+                            people = add_to_dictionary(people, new_name_key, name_to_add)
+                            print("Person added")
+                        else:
+                            print("You didn't enter a name")
+
                         user_continue = get_sanitised_input("Do you want to add another name? [y/n]: ",
                                                             type_=str.lower, range_=('y', 'Y', 'n', 'N'))
                         if user_continue.upper() == 'N':
@@ -191,9 +215,8 @@ if __name__ == "__main__":
                 # delete people
                 elif people_menu_user_choice == 3:
                     while True:
-                        # show table of people and ID's
                         clear_screen()
-                        people_table = create_people_table_object()
+                        people_table = create_table_object_of_dictionary_items_and_capitalize_table_name("people", people)
                         print(people_table)
                         id_to_delete = get_sanitised_input("Enter the ID of the person you want to delete: ",
                                                            type_=int)
@@ -238,11 +261,16 @@ if __name__ == "__main__":
                     while True:
                         clear_screen()
                         drink_to_add = get_sanitised_input("Enter a drink to add: ")
-                        list_of_drinks_keys = return_list_of_dictionary_keys(drinks)
-                        new_drink_key = get_last_element_of_list_and_add_one_then_return_as_string(list_of_drinks_keys)
-                        drinks = add_to_dictionary(drinks, new_drink_key, drink_to_add)
                         clear_screen()
-                        print("Drink added")
+
+                        if drink_to_add is not "":
+                            list_of_drinks_keys = return_list_of_dictionary_keys(drinks)
+                            new_drink_key = get_last_element_of_list_and_add_one_then_return_as_string(list_of_drinks_keys)
+                            drinks = add_to_dictionary(drinks, new_drink_key, drink_to_add)
+                            print("Drink added")
+                        else:
+                            print("You didn't enter a drink")
+
                         user_continue = get_sanitised_input("Do you want to add another drink? [y/n]: ",
                                                             type_=str.lower, range_=('y', 'Y', 'n', 'N'))
                         if user_continue.upper() == 'N':
@@ -278,7 +306,7 @@ if __name__ == "__main__":
             while True:
                 print_rounds_menu()
                 rounds_menu_user_choice = get_sanitised_input("Choose a rounds menu option: ",
-                                                              type_=int, min_=1, max_=2)
+                                                              type_=int, min_=1, max_=3)
                 clear_screen()
 
                 # view rounds
@@ -303,5 +331,5 @@ if __name__ == "__main__":
         # exit
         elif main_menu_user_choice == 5:
             save_all()
-            print("Thank you for BrIWing!")
+            print("Thank you for brIWing!")
             exit()
