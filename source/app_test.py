@@ -1,16 +1,11 @@
 import os
-from os import environ
 import pyfiglet
-import pymysql
 from prettytable import PrettyTable
 
-import saving_logic
-
-
-def save_all():
-    saving_logic.save_data_to_file("people.txt", people)
-    saving_logic.save_data_to_file("drinks.txt", drinks)
-    saving_logic.save_data_to_file("favourites.txt", favourite_drink)
+import database
+from person import Person
+from drink import Drink
+from round import Round
 
 
 def print_main_menu():
@@ -32,8 +27,9 @@ def print_people_menu():
     [1] View people
     [2] Add people
     [3] Delete people
-    [4] Add favourites
-    [5] Main menu
+    [4] View favourites
+    [5] Add favourites
+    [6] Main menu
     """)
 
 
@@ -103,71 +99,65 @@ def get_sanitised_input(prompt, type_=None, min_=None, max_=None, range_=None):
             return ui
 
 
-def return_list_of_dictionary_keys(dictionary):
-    list_of_keys = list(dictionary.keys())
-    return list_of_keys
+def get_pretty_people_table_from_database():
+    people_table = PrettyTable()
+    people_table.field_names = ["ID", "Name"]
+
+    people_table_data = database.get_person_id_and_person_name_from_people_database_table()
+
+    for row in people_table_data:
+        person_id = row[0]
+        person_name = row[1].capitalize()
+        people_table.add_row([person_id, person_name])
+
+    return people_table
 
 
-def get_last_element_of_list_and_add_one_then_return_as_string(list_of_keys):
-    try:
-        last_key_in_list = int(list_of_keys[-1])
-        last_key_in_list += 1
-        return str(last_key_in_list)
-    except IndexError:
-        return str(1)
+def get_pretty_drinks_table_from_database():
+    drinks_table = PrettyTable()
+    drinks_table.field_names = ["ID", "Name"]
+
+    drinks_table_data = database.get_drink_id_and_drink_name_from_drink_database_table()
+
+    for row in drinks_table_data:
+        drink_id = row[0]
+        drink_name = row[1].capitalize()
+        drinks_table.add_row([drink_id, drink_name])
+
+    return drinks_table
 
 
-def add_to_dictionary(dictionary, key, value):
-    dictionary[key] = value
-    return dictionary
+def get_pretty_favourites_table_from_database():
+    favourites_table = PrettyTable()
+    favourites_table.field_names = ["Person", "Favourite Drink"]
+
+    favourites_table_data = database.get_person_and_favourite_drink_from_people_database_table()
+
+    for row in favourites_table_data:
+        person_name = row[0].capitalize()
+        drink_name = row[1].capitalize()
+        favourites_table.add_row([person_name, drink_name])
+
+    return favourites_table
 
 
-def delete_dictionary_entry(dictionary, key):
-    del dictionary[key]
-    return dictionary
+def get_pretty_rounds_table():
+    rounds_table = PrettyTable()
+    rounds_table.field_names = ["ID", "Active", "StartTime", "Initiator"]
 
+    rounds_table_data = database.get_rounds_info_from_rounds_database_table()
 
-def create_table_object_of_dictionary_items_and_capitalize_table_name(table_name, dictionary):
-    pretty_table_object = PrettyTable()
-    pretty_table_object.field_names = ["ID", table_name.capitalize()]
-    for id_, value in dictionary.items():
-        pretty_table_object.add_row([id_, value.capitalize()])
-    return pretty_table_object
+    for row in rounds_table_data:
+        round_id = row[0]
+        active_status = row[1]
+        start_time = row[2]
+        initiator = row[3].capitalize()
+        rounds_table.add_row([round_id, active_status, start_time, initiator])
+
+    return rounds_table
 
 
 if __name__ == "__main__":
-    # load data from text files to corresponding dictionaries
-    people = {}
-    db = pymysql.connect(
-        environ.get('DB_HOST'),  # host
-        environ.get('DB_USER'),  # username
-        environ.get('DB_PASSWORD'),  # password
-        environ.get('DB_NAME')  # database
-    )
-
-    cursor = db.cursor()
-
-    try:
-        cursor.execute("SELECT * FROM person")
-
-        results = cursor.fetchall()
-
-        for row in results:
-            id_ = row[0]
-            first_name = row[1]
-
-            people[id_] = first_name
-
-    except:
-        print("Error occurred")
-
-    finally:
-        db.close()
-
-    # people = saving_logic.load_data_to_dict("people.txt")
-    drinks = saving_logic.load_data_to_dict("drinks.txt")
-    favourite_drink = saving_logic.load_data_to_dict("favourites.txt")
-
     while True:
         clear_screen()
         print_main_menu()
@@ -180,29 +170,24 @@ if __name__ == "__main__":
                 clear_screen()
                 print_people_menu()
                 people_menu_user_choice = get_sanitised_input("Choose a people menu option: ",
-                                                              type_=int, min_=1, max_=5)
+                                                              type_=int, min_=1, max_=6)
                 clear_screen()
 
                 # view people
                 if people_menu_user_choice == 1:
-                    # TODO create object one at program start and add delete rows based on what user adds/deletes in
-                    #  the session
-                    people_table = create_table_object_of_dictionary_items_and_capitalize_table_name("people", people)
-                    print(people_table)
-                    print("")
+                    print(get_pretty_people_table_from_database())
                     return_to_menu()
 
                 # add people
                 elif people_menu_user_choice == 2:
                     while True:
                         clear_screen()
-                        name_to_add = get_sanitised_input("Enter a name to add: ")
+                        person_to_add = get_sanitised_input("Enter a name to add: ").lower()
                         clear_screen()
-                        
-                        if name_to_add is not "":
-                            list_of_people_keys = return_list_of_dictionary_keys(people)
-                            new_name_key = get_last_element_of_list_and_add_one_then_return_as_string(list_of_people_keys)
-                            people = add_to_dictionary(people, new_name_key, name_to_add)
+
+                        if person_to_add is not "":
+                            person = Person(person_to_add)
+                            person.insert_person_into_database_and_update_id_with_database_value()
                             print("Person added")
                         else:
                             print("You didn't enter a name")
@@ -216,26 +201,43 @@ if __name__ == "__main__":
                 elif people_menu_user_choice == 3:
                     while True:
                         clear_screen()
-                        people_table = create_table_object_of_dictionary_items_and_capitalize_table_name("people", people)
-                        print(people_table)
+                        print(get_pretty_people_table_from_database())
                         id_to_delete = get_sanitised_input("Enter the ID of the person you want to delete: ",
                                                            type_=int)
                         clear_screen()
-                        if str(id_to_delete) in people.keys():
-                            # delete corresponding person from dictionary
-                            people = delete_dictionary_entry(people, str(id_to_delete))
-                            print("Person deleted")
-                        else:
-                            print("That ID is not in the list")
+                        database.delete_person_from_database(id_to_delete)
                         user_continue = get_sanitised_input("Do you want to delete another person? [y/n]: ",
                                                             type_=str.lower, range_=('y', 'Y', 'n', 'N'))
                         if user_continue.upper() == 'N':
                             break
 
-                # add favourites
                 elif people_menu_user_choice == 4:
+                    # view favourites
+                    print(get_pretty_favourites_table_from_database())
+                    return_to_menu()
+
+                # add favourites
+                elif people_menu_user_choice == 5:
                     # TODO add add favourites option
-                    pass
+                    while True:
+                        clear_screen()
+                        print(get_pretty_people_table_from_database())
+                        person_to_add_favourite_to = get_sanitised_input("Enter the ID of the person you want to add a "
+                                                                         "favourite to: ", type_=int)
+                        clear_screen()
+
+                        print(get_pretty_drinks_table_from_database())
+                        person_favourite_drink = get_sanitised_input("Enter the ID of the drink that is the persons "
+                                                                     "favourite: ", type_=int)
+                        clear_screen()
+
+                        database.update_favourite_pairing_of_person_id_and_drink_id(person_to_add_favourite_to,
+                                                                                    person_favourite_drink)
+
+                        user_continue = get_sanitised_input("Do you want to add another favourite? [y/n]: ",
+                                                            type_=str.lower, range_=('y', 'Y', 'n', 'N'))
+                        if user_continue.upper() == 'N':
+                            break
 
                 # return to main menu
                 else:
@@ -251,22 +253,19 @@ if __name__ == "__main__":
 
                 # view drinks
                 if drinks_menu_user_choice == 1:
-                    drinks_table = create_table_object_of_dictionary_items_and_capitalize_table_name("drinks", drinks)
-                    print(drinks_table)
-                    print("")
+                    print(get_pretty_drinks_table_from_database())
                     return_to_menu()
 
                 # add drinks
                 elif drinks_menu_user_choice == 2:
                     while True:
                         clear_screen()
-                        drink_to_add = get_sanitised_input("Enter a drink to add: ")
+                        drink_to_add = get_sanitised_input("Enter a drink to add: ").lower()
                         clear_screen()
 
                         if drink_to_add is not "":
-                            list_of_drinks_keys = return_list_of_dictionary_keys(drinks)
-                            new_drink_key = get_last_element_of_list_and_add_one_then_return_as_string(list_of_drinks_keys)
-                            drinks = add_to_dictionary(drinks, new_drink_key, drink_to_add)
+                            drink = Drink(drink_to_add)
+                            drink.insert_drink_into_database_and_update_id_with_database_value()
                             print("Drink added")
                         else:
                             print("You didn't enter a drink")
@@ -280,18 +279,12 @@ if __name__ == "__main__":
                 elif drinks_menu_user_choice == 3:
                     while True:
                         # show table of drinks and ID's
-                        drinks_table = create_table_object_of_dictionary_items_and_capitalize_table_name("drinks",
-                                                                                                         drinks)
-                        print(drinks_table)
-                        print("")
+                        print(get_pretty_drinks_table_from_database())
                         id_to_delete = get_sanitised_input("Enter the ID of the drink you want to delete: ", type_=int)
                         clear_screen()
-                        if str(id_to_delete) in drinks.keys():
-                            # delete corresponding person from dictionary
-                            drinks = delete_dictionary_entry(drinks, str(id_to_delete))
-                            print("Drink deleted")
-                        else:
-                            print("That ID is not in the list")
+
+                        database.delete_drink_from_database(id_to_delete)
+
                         user_continue = get_sanitised_input("Do you want to delete another drink? [y/n]: ",
                                                             type_=str.lower, range_=('y', 'Y', 'n', 'N'))
                         if user_continue.upper() == 'N':
@@ -304,20 +297,29 @@ if __name__ == "__main__":
         # rounds
         elif main_menu_user_choice == 3:
             while True:
+                clear_screen()
                 print_rounds_menu()
                 rounds_menu_user_choice = get_sanitised_input("Choose a rounds menu option: ",
                                                               type_=int, min_=1, max_=3)
                 clear_screen()
 
-                # view rounds
+                # view past rounds list
                 if rounds_menu_user_choice == 1:
                     # TODO add view rounds option
-                    pass
+                    # print table of past rounds with round id and drink maker of round
+                    print(get_pretty_rounds_table())
+                    return_to_menu()
 
                 # add round
                 elif rounds_menu_user_choice == 2:
-                    # TODO add add round option
-                    pass
+                    # create a round object
+                    people_table = get_pretty_people_table_from_database()
+                    print(people_table)
+                    initiator = get_sanitised_input("Enter the id of the person making the round: ", type_=int)
+
+                    drink_round = Round(initiator)
+                    drink_round.insert_round_into_database_and_update_id_with_database_value()
+                    return_to_menu()
 
                 # return to main menu
                 else:
@@ -330,6 +332,5 @@ if __name__ == "__main__":
 
         # exit
         elif main_menu_user_choice == 5:
-            save_all()
             print("Thank you for brIWing!")
             exit()
