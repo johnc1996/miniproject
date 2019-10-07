@@ -1,32 +1,27 @@
-import database
-
-
 class Person:
-    def __init__(self, name, id_=-1):
-        self.name = name
-        self.id_ = id_
-
-    def set_name(self, name):
-        self.name = name
-
-    def get_name(self):
-        return self.name
+    def __init__(self, _id, first_name, last_name, favourite_drink):
+        self._id = _id
+        self.first_name = first_name
+        self.last_name = last_name
+        self.favourite_drink = favourite_drink
 
     def get_id(self):
-        return self.id_
+        return self._id
 
-    def insert_person_into_database_and_update_id_with_database_value(self):
-        sql_save = """
-        INSERT into tb_People (name)
-        VALUES (%s)
-        """
+    def get_first_name(self):
+        return self.first_name
 
-        sql_query_latest_id = """
-        SELECT max(person_id) FROM tb_People
-        """
+    def set_first_name(self, new_first_name):
+        self.first_name = new_first_name
 
-        parameters = (self.name)
+    def get_last_name(self):
+        return self.last_name
 
-        database.db_insert_or_update_record(sql_save, parameters)
+    def set_last_name(self, new_last_name):
+        self.last_name = new_last_name
 
-        self.id_ = database.db_return_rows(sql_query_latest_id)
+    def get_full_name_and_capitalize(self):
+        return f"{self.first_name.capitalize()} {self.last_name.capitalize()}"
+
+    def get_favourite_drink(self):
+        return self.favourite_drink

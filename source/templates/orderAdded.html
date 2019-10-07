@@ -1,0 +1,23 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-md-center">
+        <p>Person: {{person}}</p>
+    </div>
+    <div class="row justify-content-md-center">
+        <p>Drink: {{drink}} </p>
+    </div>
+    <div class="row justify-content-md-center">
+        <p>Are you sure you want to add this order?</p>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-2">
+            <button type="button" class="btn btn-success btn-lg">Yes</button>
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-danger btn-lg">No</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

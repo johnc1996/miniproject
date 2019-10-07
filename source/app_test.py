@@ -1,8 +1,7 @@
 import os
 import pyfiglet
 from prettytable import PrettyTable
-
-import database
+import db
 from person import Person
 from drink import Drink
 from round import Round
@@ -103,7 +102,7 @@ def get_pretty_people_table_from_database():
     people_table = PrettyTable()
     people_table.field_names = ["ID", "Name"]
 
-    people_table_data = database.get_person_id_and_person_name_from_people_database_table()
+    people_table_data = db.get_person_id_and_person_name_from_people_database_table()
 
     for row in people_table_data:
         person_id = row[0]
@@ -117,7 +116,7 @@ def get_pretty_drinks_table_from_database():
     drinks_table = PrettyTable()
     drinks_table.field_names = ["ID", "Name"]
 
-    drinks_table_data = database.get_drink_id_and_drink_name_from_drink_database_table()
+    drinks_table_data = db.get_drink_id_and_drink_name_from_drink_database_table()
 
     for row in drinks_table_data:
         drink_id = row[0]
@@ -131,7 +130,7 @@ def get_pretty_favourites_table_from_database():
     favourites_table = PrettyTable()
     favourites_table.field_names = ["Person", "Favourite Drink"]
 
-    favourites_table_data = database.get_person_and_favourite_drink_from_people_database_table()
+    favourites_table_data = db.get_person_and_favourite_drink_from_people_database_table()
 
     for row in favourites_table_data:
         person_name = row[0].capitalize()
@@ -145,7 +144,7 @@ def get_pretty_rounds_table():
     rounds_table = PrettyTable()
     rounds_table.field_names = ["ID", "Active", "StartTime", "Initiator"]
 
-    rounds_table_data = database.get_rounds_info_from_rounds_database_table()
+    rounds_table_data = db.get_rounds_info_from_rounds_database_table()
 
     for row in rounds_table_data:
         round_id = row[0]
@@ -205,7 +204,7 @@ if __name__ == "__main__":
                         id_to_delete = get_sanitised_input("Enter the ID of the person you want to delete: ",
                                                            type_=int)
                         clear_screen()
-                        database.delete_person_from_database(id_to_delete)
+                        db.delete_person_from_database(id_to_delete)
                         user_continue = get_sanitised_input("Do you want to delete another person? [y/n]: ",
                                                             type_=str.lower, range_=('y', 'Y', 'n', 'N'))
                         if user_continue.upper() == 'N':
@@ -231,8 +230,8 @@ if __name__ == "__main__":
                                                                      "favourite: ", type_=int)
                         clear_screen()
 
-                        database.update_favourite_pairing_of_person_id_and_drink_id(person_to_add_favourite_to,
-                                                                                    person_favourite_drink)
+                        db.update_favourite_pairing_of_person_id_and_drink_id(person_to_add_favourite_to,
+                                                                              person_favourite_drink)
 
                         user_continue = get_sanitised_input("Do you want to add another favourite? [y/n]: ",
                                                             type_=str.lower, range_=('y', 'Y', 'n', 'N'))
@@ -283,7 +282,7 @@ if __name__ == "__main__":
                         id_to_delete = get_sanitised_input("Enter the ID of the drink you want to delete: ", type_=int)
                         clear_screen()
 
-                        database.delete_drink_from_database(id_to_delete)
+                        db.delete_drink_from_database(id_to_delete)
 
                         user_continue = get_sanitised_input("Do you want to delete another drink? [y/n]: ",
                                                             type_=str.lower, range_=('y', 'Y', 'n', 'N'))
