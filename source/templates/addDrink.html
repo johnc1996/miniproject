@@ -1,5 +1,16 @@
 {% extends "template.html" %}
 
 {% block content %}
-<p>TODO: Create form for user to enter details of a drink to add</p>
+<div class="row justify-content-center">
+    <div class="card col-sm-4">
+        <form method="post">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Drink name:</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                       placeholder="Enter drink" name="drink-name" required>
+            </div>
+            <input type="submit" id="submit-btn" value="Submit" class="btn btn-primary" required>
+        </form>
+    </div>
+</div>
 {% endblock %}

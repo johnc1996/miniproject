@@ -1,5 +1,22 @@
 {% extends "template.html" %}
 
 {% block content %}
-<p>TODO: Present user with form so that they can add a round</p>
+<div class="row justify-content-center">
+    <div class="col-sm-4">
+        <div class="card">
+            <form method="post">
+                <div class="form-group">
+                    <label for="initiator">Round maker:</label>
+                    <select class="form-control" id="initiator" name="initiator" required>
+                        <option selected>Choose...</option>
+                        {% for person in people %}
+                        <option value='{{person[0]}}'>{{person[1].capitalize()}} {{person[2].capitalize()}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" id="submit-btn" value="Submit" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

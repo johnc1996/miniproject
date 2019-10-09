@@ -1,54 +1,29 @@
 {% extends "template.html" %}
 
 {% block content %}
-<div class="card-deck">
-    <div class="card">
-        <a href="#">
-            <img src="../static/drink1.svg" class="card-img-top rounded mx-auto d-block" alt="User Image"
-                 style="width:128px; height:128px">
-            <div class="card-body">
-                <h5 class="card-title">Drink 1</h5>
-            </div>
-        </a>
-    </div>
-    <div class="card">
-        <a href="#">
-            <img src="../static/drink1.svg" class="card-img-top rounded mx-auto d-block" alt="User Image"
-                 style="width:128px; height:128px">
-            <div class="card-body">
-                <h5 class="card-title">Drink 2</h5>
-            </div>
-        </a>
-    </div>
-    <div class="card">
-        <a href="#">
-            <img src="../static/drink1.svg" class="card-img-top rounded mx-auto d-block" alt="User Image"
-                 style="width:128px; height:128px">
-            <div class="card-body">
-                <h5 class="card-title">Drink 3</h5>
-            </div>
-        </a>
-    </div>
-    <div class="card">
-        <a href="#">
-            <img src="../static/drink1.svg" class="card-img-top rounded mx-auto d-block" alt="User Image"
-                 style="width:128px; height:128px">
-            <div class="card-body">
-                <h5 class="card-title">Drink 4</h5>
-            </div>
-        </a>
-    </div>
-    <div class="card">
-        <a href="#">
-            <img src="../static/drink1.svg" class="card-img-top rounded mx-auto d-block" alt="User Image"
-                 style="width:128px; height:128px">
-            <div class="card-body">
-                <h5 class="card-title">Drink 5</h5>
-            </div>
-        </a>
-    </div>
+<div class="container">
+    <a href="/drinks/add">
+        <button type="button" class="btn btn-lg btn-dark">
+            Add drink
+        </button>
+    </a>
 </div>
+
 <br>
-<br>
-<br>
+
+<div class="card-deck">
+    {% for name in drink_names %}
+    <div class="col-sm-2">
+        <div class="card">
+            <a href="#">
+                <img src="../static/drink1.svg" class="card-img-top rounded mx-auto d-block" alt="User Image"
+                     style="width:128px; height:128px">
+                <div class="card-body">
+                    <h5 class="card-title">{{name[0].title()}}</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

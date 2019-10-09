@@ -1,0 +1,42 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col col-lg-2">
+            <a href="/rounds/add">
+                <button type="button" class="btn btn-lg btn-dark">
+                    Create round
+                </button>
+            </a>
+        </div>
+        <div class="col col-lg-2">
+            <a href="/rounds/add/order">
+                <button type="button" class="btn btn-lg btn-dark">
+                    Add order
+                </button>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<br>
+
+<div class="card-deck">
+    {% for round in rounds %}
+    <div class="col-sm-2">
+        <div class="card">
+            <a href="#">
+                <img src="../static/rounds.svg" class="card-img-top rounded mx-auto d-block" alt="User Image"
+                     style="width:128px; height:128px">
+                <div class="card-body">
+                    <h5>Initiator:</h5>
+                    <h5 class="card-title">{{round[0].capitalize()}} {{round[1].capitalize()}}</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
