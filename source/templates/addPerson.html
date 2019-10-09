@@ -2,15 +2,18 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="card col-sm-4">
+    <div class="card col-sm-2">
         <form method="post">
             <div class="form-group">
+                <br>
                 <label for="first-name">First name:</label>
                 <input type="text" class="form-control" id="first-name" aria-describedby="firstNameHelp"
                        placeholder="Enter first name" name="first-name" required>
+                <br>
                 <label for="last-name">Last name:</label>
                 <input type="text" class="form-control" id="last-name" aria-describedby="lastNameHelp"
                        placeholder="Enter last name" name="last-name" required>
+                <br>
                 <label for="favourite-drink">Favourite drink</label>
                 <select class="form-control" id="favourite-drink" name="favourite-drink" required>
                     <option selected>Choose...</option>
@@ -20,6 +23,8 @@
                 </select>
             </div>
             <input type="submit" id="submit-btn" value="Submit" class="btn btn-primary">
+            <br>
+            <br>
         </form>
     </div>
 </div>

@@ -3,19 +3,18 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="card col-sm-4">
-
         <form method="post">
             <div class="form-group">
                 <br>
-                <label for="initiator">Round maker:</label>
-                <select class="form-control" id="initiator" name="initiator" required>
+                <label for="person">Person:</label>
+                <select class="form-control" id="person" name="person-id" required>
                     <option selected>Choose...</option>
                     {% for person in people %}
                     <option value='{{person[0]}}'>{{person[1].capitalize()}} {{person[2].capitalize()}}</option>
                     {% endfor %}
                 </select>
             </div>
-            <input type="submit" id="submit-btn" value="Submit" class="btn btn-primary">
+            <input type="submit" id="submit-btn" value="Submit" class="btn btn-primary" required>
             <br>
             <br>
         </form>

@@ -2,9 +2,9 @@ import os
 import pyfiglet
 from prettytable import PrettyTable
 import db
-from person import Person
-from drink import Drink
-from round import Round
+from .person import Person
+from .drink import Drink
+from .round import Round
 
 
 def print_main_menu():

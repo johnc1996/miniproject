@@ -35,6 +35,18 @@ def get_add_person_page_and_add_person():
         return redirect('/people')
 
 
+@app.route('/people/delete', methods=['GET', 'POST'])
+def get_delete_person_page_and_delete_person():
+    if request.method == 'GET':
+        people = db.get_all_people()
+        return render_template("deletePerson.html", head_title="Delete person", page_title="Delete person",
+                               people=people)
+    elif request.method == 'POST':
+        person_id = request.form.get("person-id")
+        db.delete_person(person_id)
+        return redirect('/people')
+
+
 @app.route('/drinks', methods=['GET'])
 def get_drinks():
     drink_names = db.get_drink_names()

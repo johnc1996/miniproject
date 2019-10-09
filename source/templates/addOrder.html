@@ -2,38 +2,44 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-sm-4">
-        <div class="card">
-            <form method="post">
-                <div class="form-group">
-                    <label for="person">Person:</label>
-                    <select class="form-control" id="person" name="person-id" required>
-                        <option selected>Choose...</option>
-                        {% for person in people %}
-                        <option value='{{person[0]}}'>{{person[1].capitalize()}} {{person[2].capitalize()}}</option>
-                        {% endfor %}
-                    </select>
 
-                    <label for="drink">Drink:</label>
-                    <select class="form-control" id="drink" name="drink-id" required>
-                        <option selected>Choose...</option>
-                        {% for drink in drinks %}
-                        <option value='{{drink[0]}}'>{{drink[1].title()}}</option>
-                        {% endfor %}
-                    </select>
+    <div class="card col-sm-4">
+        <form method="post">
+            <div class="form-group">
+                <br>
 
-                    <label for="initiator">Initiator:</label>
-                    <select class="form-control" id="initiator" name="round-id" required>
-                        <option selected>Choose...</option>
-                        {% for initiator in initiators %}
-                        <option value=''>{{initiator[0].capitalize()}} {{initiator[1].capitalize()}}</option>
-                        {% endfor %}
-                    </select>
+                <label for="person">Person:</label>
+                <select class="form-control" id="person" name="person-id" required>
+                    <option selected>Choose...</option>
+                    {% for person in people %}
+                    <option value='{{person[0]}}'>{{person[1].capitalize()}} {{person[2].capitalize()}}</option>
+                    {% endfor %}
+                </select>
 
-                </div>
-                <input type="submit" id="submit-btn" value="Submit" class="btn btn-primary">
-            </form>
-        </div>
+                <br>
+
+                <label for="drink">Drink:</label>
+                <select class="form-control" id="drink" name="drink-id" required>
+                    <option selected>Choose...</option>
+                    {% for drink in drinks %}
+                    <option value='{{drink[0]}}'>{{drink[1].title()}}</option>
+                    {% endfor %}
+                </select>
+
+                <br>
+
+                <label for="initiator">Initiator:</label>
+                <select class="form-control" id="initiator" name="round-id" required>
+                    <option selected>Choose...</option>
+                    {% for initiator in initiators %}
+                    <option value=''>{{initiator[0].capitalize()}} {{initiator[1].capitalize()}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="submit" id="submit-btn" value="Submit" class="btn btn-primary">
+            <br>
+            <br>
+        </form>
     </div>
 </div>
 {% endblock %}

@@ -83,6 +83,17 @@ def insert_person(first_name, last_name, favourite_drink_id):
     return db_insert_or_update_record(query, parameters)
 
 
+def delete_person(person_id):
+    query = """
+    DELETE FROM People
+    WHERE PersonID = %s
+    """
+
+    parameters = person_id
+
+    return db_insert_or_update_record(query, parameters)
+
+
 def insert_round(initiator_id):
     query = """
     INSERT INTO Rounds(InitiatorID)

@@ -2,18 +2,29 @@
 
 {% block content %}
 <div class="container">
-    <a href="/people/add">
-        <button type="button" class="btn btn-lg btn-dark">
-            Add person
-        </button>
-    </a>
+    <div class="row justify-content-md-center">
+        <div class="col col-xl-2">
+            <a href="/people/add">
+                <button type="button" class="btn btn-lg btn-dark">
+                    Add person
+                </button>
+            </a>
+        </div>
+        <div class="col col-xl-2">
+            <a href="/people/delete">
+                <button type="button" class="btn btn-lg btn-danger">
+                    Delete person
+                </button>
+            </a>
+        </div>
+    </div>
 </div>
 
 <br>
 
 <div class="card-deck">
     {% for person_name in people_names %}
-    <div class="col-sm-2">
+    <div class="col-xl-2">
         <div class="card">
             <a href="#">
                 <img src="../static/person1.svg" class="card-img-top rounded mx-auto d-block" alt="User Image"
