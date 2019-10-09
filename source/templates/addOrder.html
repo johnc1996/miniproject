@@ -2,7 +2,6 @@
 
 {% block content %}
 <div class="row justify-content-center">
-
     <div class="card col-sm-4">
         <form method="post">
             <div class="form-group">
@@ -31,8 +30,8 @@
                 <label for="initiator">Initiator:</label>
                 <select class="form-control" id="initiator" name="round-id" required>
                     <option selected>Choose...</option>
-                    {% for initiator in initiators %}
-                    <option value=''>{{initiator[0].capitalize()}} {{initiator[1].capitalize()}}</option>
+                    {% for round in rounds %}
+                    <option value='{{round[0]}}'>{{round[1].capitalize()}} {{round[2].capitalize()}}</option>
                     {% endfor %}
                 </select>
             </div>

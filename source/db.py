@@ -61,6 +61,15 @@ def get_initiators_first_and_last_name():
     return db_return_rows(query)
 
 
+def get_initiators_first_and_last_name_and_round_id():
+    query = """
+    SELECT R.RoundID, P.FirstName, P.LastName
+    FROM Rounds as R
+    JOIN People as P ON R.InitiatorID = P.PersonID
+    """
+    return db_return_rows(query)
+
+
 def insert_drink(drink_name):
     query = """
     INSERT INTO Drinks(Name)
@@ -101,5 +110,30 @@ def insert_round(initiator_id):
     """
 
     parameters = initiator_id
+
+    return db_insert_or_update_record(query, parameters)
+
+
+def insert_order(person_id, drink_id, round_id):
+    query = """
+    INSERT INTO Orders(PersonID, DrinkID, RoundID)
+    VALUES (%s, %s, %s)
+    """
+
+    parameters = (person_id, drink_id, round_id)
+
+    return db_insert_or_update_record(query, parameters)
+
+
+def get_orders(round_id):
+    query = """
+    SELECT People.FirstName, People.LastName, Drinks.Name
+    FROM Orders
+    JOIN People ON People.PersonID = Orders.PersonID
+    JOIN Drinks ON Drinks.DrinkID = Orders.DrinkID
+    WHERE Orders.RoundID = (%s)
+    """
+
+    parameters = round_id
 
     return db_insert_or_update_record(query, parameters)

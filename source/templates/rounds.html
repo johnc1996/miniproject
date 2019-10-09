@@ -2,15 +2,22 @@
 
 {% block content %}
 <div class="container">
-    <div class="row justify-content-md-center">
-        <div class="col col-lg-2">
+    <div class="row justify-content-center">
+        <div class="col col-sm-2">
             <a href="/rounds/add">
                 <button type="button" class="btn btn-lg btn-dark">
                     Create round
                 </button>
             </a>
         </div>
-        <div class="col col-lg-2">
+        <div class="col col-sm-2">
+            <a href="/rounds/view">
+                <button type="button" class="btn btn-lg btn-dark">
+                    View round
+                </button>
+            </a>
+        </div>
+        <div class="col col-sm-2">
             <a href="/rounds/add/order">
                 <button type="button" class="btn btn-lg btn-dark">
                     Add order
@@ -20,21 +27,22 @@
     </div>
 </div>
 
-
+<br>
 <br>
 
 <div class="card-deck">
     {% for round in rounds %}
-    <div class="col-sm-2">
+    <div class="col-xl-2">
         <div class="card">
-            <a href="#">
-                <img src="../static/rounds.svg" class="card-img-top rounded mx-auto d-block" alt="User Image"
-                     style="width:128px; height:128px">
-                <div class="card-body">
-                    <h5>Initiator:</h5>
-                    <h5 class="card-title">{{round[0].capitalize()}} {{round[1].capitalize()}}</h5>
-                </div>
-            </a>
+            <div class="card-body">
+                <a href="#">
+                    <img src="../static/rounds.svg" alt="User Image" width="128px" height="128px">
+                </a>
+                <br>
+                <br>
+                <h5>Initiator:</h5>
+                <h5 class="card-title">{{round[0].capitalize()}} {{round[1].capitalize()}}</h5>
+            </div>
         </div>
     </div>
     {% endfor %}

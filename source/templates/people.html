@@ -21,18 +21,20 @@
 </div>
 
 <br>
+<br>
 
 <div class="card-deck">
     {% for person_name in people_names %}
     <div class="col-xl-2">
         <div class="card">
-            <a href="#">
-                <img src="../static/person1.svg" class="card-img-top rounded mx-auto d-block" alt="User Image"
-                     style="width:128px; height:128px">
-                <div class="card-body">
-                    <h5 class="card-title">{{person_name[0].title() + " " + person_name[1].title()}}</h5>
-                </div>
-            </a>
+            <div class="card-body">
+                <a href="#">
+                    <img src="../static/person1.svg" alt="User Image" width="128px" height="128px">
+                </a>
+                <br>
+                <br>
+                <h5 class="card-title">{{person_name[0].title() + " " + person_name[1].title()}}</h5>
+            </div>
         </div>
     </div>
     {% endfor %}

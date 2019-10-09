@@ -1,0 +1,20 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <h3>Which round would you like to view?</h3>
+    </div>
+    <div class="row justify-content-center">
+        <form method="post">
+            <label for="round">Rounds</label>
+            <select class="form-control" id="round" name="round-id" required>
+                <option selected>Choose...</option>
+                {% for round in rounds %}
+                <option value='{{round[0]}}'>Initiator: {{round[1].capitalize()}} {{round[2].capitalize()}}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</div>
+{% endblock %}

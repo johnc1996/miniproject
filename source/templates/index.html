@@ -1,38 +1,41 @@
 {% extends "template.html" %}
 
 {% block content %}
-<div class="row justify-content-md-center">
-    <div class="col-sm-2">
-        <div class="row justify-content-md-center">
-            <a href="/people">
-                <img src="../static/person1.svg" alt="people icon" style="width:128px; height:128px"/>
-            </a>
-        </div>
-        <br>
-        <div class="row justify-content-md-center">
-            <h3>People</h3>
-        </div>
-    </div>
-    <div class="col-sm-2">
-        <div class="row justify-content-md-center">
-            <a href="/drinks">
-                <img src="../static/drink1.svg" alt="drink icon" style="width:128px; height:128px"/>
-            </a>
-        </div>
-        <br>
-        <div class="row justify-content-md-center">
-            <h3>Drinks</h3>
+<div class="card-deck justify-content-center">
+    <div class="col-xl-2">
+        <div class="card">
+            <div class="card-body">
+                <a href="/people">
+                    <img src="../static/person1.svg" alt="people icon" width="128px" height="128px"/>
+                </a>
+                <br>
+                <br>
+                <h5 class="card-title">People</h5>
+            </div>
         </div>
     </div>
-    <div class="col-sm-2">
-        <div class="row justify-content-md-center">
-            <a href="/rounds">
-                <img src="../static/rounds.svg" alt="drink icon" style="width:128px; height:128px"/>
-            </a>
+    <div class="col-xl-2">
+        <div class="card">
+            <div class="card-body">
+                <a href="/drinks">
+                    <img src="../static/drink1.svg" alt="drink icon" width="128px" height="128px"/>
+                </a>
+                <br>
+                <br>
+                <h5 class="card-title">Drinks</h5>
+            </div>
         </div>
-        <br>
-        <div class="row justify-content-md-center">
-            <h3>Rounds</h3>
+    </div>
+    <div class="col-xl-2">
+        <div class="card">
+            <div class="card-body">
+                <a href="/rounds">
+                    <img src="../static/rounds.svg" alt="round icon" width="128px" height="128px"/>
+                </a>
+                <br>
+                <br>
+                <h5 class="card-title">Rounds</h5>
+            </div>
         </div>
     </div>
 </div>
