@@ -27,11 +27,11 @@
 
                 <br>
 
-                <label for="initiator">Initiator:</label>
+                <label for="initiator">Round:</label>
                 <select class="form-control" id="initiator" name="round-id" required>
                     <option selected>Choose...</option>
                     {% for round in rounds %}
-                    <option value='{{round[0]}}'>{{round[1].capitalize()}} {{round[2].capitalize()}}</option>
+                    <option value='{{round[0]}}'>Initiator: {{round[1].capitalize()}} {{round[2].capitalize()}}</option>
                     {% endfor %}
                 </select>
             </div>

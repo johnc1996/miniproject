@@ -16,26 +16,21 @@ def get_home():
 @app.route('/people', methods=['GET'])
 def get_people():
     if request.method == "GET":
-        # TODO Delete this line
-        people_names = [("alan", "alanson"), ("bob", "bobson"), ("charlie", "charlieson")]
-        # people_names = db.get_people_first_and_last_names()
+
+        people_names = db.get_people_first_and_last_names()
         return render_template("people.html", head_title="People", page_title="People",
                                people_names=people_names)
 
 
 @app.route('/drinks', methods=['GET'])
 def get_drinks():
-    # TODO remove this line
-    drink_names = [("coffee", ), ("tea", ), ("coke", )]
-    # drink_names = db.get_drink_names()
+    drink_names = db.get_drink_names()
     return render_template("drinks.html", head_title="Drinks", page_title="Drinks", drink_names=drink_names)
 
 
 @app.route('/rounds', methods=['GET'])
 def get_rounds():
-    # TODO delete this line
-    rounds = [("alan", "alanson"), ("bob", "bobson"), ("charlie", "charlieson")]
-    # rounds = db.get_initiators_first_and_last_name()
+    rounds = db.get_initiators_first_and_last_name()
     return render_template("rounds.html", head_title="Rounds", page_title="Rounds", rounds=rounds)
 
 
@@ -112,20 +107,12 @@ def get_order_add_page_and_add_order():
 def get_round_to_view():
     if request.method == 'GET':
         rounds = db.get_initiators_first_and_last_name_and_round_id()
-
         return render_template("viewRound.html", head_title="Rounds", page_title="Rounds", rounds=rounds)
     elif request.method == 'POST':
         round_id = request.form.get("round-id")
-        # orders = db.get_orders(round_id)
-        # TODO get rid of this line
-        orders = [("alan", "alanson", "coffee"), ("bob", "bobson", "tea")]
+        orders = db.get_orders(round_id)
+
         return render_template("viewOrder.html", head_title="Orders", page_title="Orders", orders=orders)
-
-
-@app.route('/test', methods=['GET'])
-def test():
-    orders = [("alan", "alanson", "coffee"), ("bob", "bobson", "tea")]
-    return render_template("viewOrder.html", head_title="Orders", page_title="Orders", orders=orders)
 
 
 if __name__ == "__main__":

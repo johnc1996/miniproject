@@ -126,14 +126,12 @@ def insert_order(person_id, drink_id, round_id):
 
 
 def get_orders(round_id):
-    query = """
+    query = f"""
     SELECT People.FirstName, People.LastName, Drinks.Name
     FROM Orders
     JOIN People ON People.PersonID = Orders.PersonID
     JOIN Drinks ON Drinks.DrinkID = Orders.DrinkID
-    WHERE Orders.RoundID = (%s)
+    WHERE Orders.RoundID = {round_id}
     """
 
-    parameters = round_id
-
-    return db_insert_or_update_record(query, parameters)
+    return db_return_rows(query)

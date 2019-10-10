@@ -5,6 +5,7 @@
     <div class="row justify-content-center">
         <h3>Which round would you like to view?</h3>
     </div>
+    <br>
     <div class="row justify-content-center">
         <form method="post">
             <label for="round">Rounds</label>
@@ -14,6 +15,9 @@
                 <option value='{{round[0]}}'>Initiator: {{round[1].capitalize()}} {{round[2].capitalize()}}</option>
                 {% endfor %}
             </select>
+            <br>
+            <br>
+            <input type="submit" id="submit-btn" value="Submit" class="btn btn-primary" required>
         </form>
     </div>
 </div>
